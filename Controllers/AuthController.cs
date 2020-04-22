@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using AutoMapper;
 
 using TaskApi.Data;
-using TaskApi.DTO;
 using TaskApi.DTOs.UserDTOs;
 using TaskApi.Helpers.Status;
 using TaskApi.Helpers.Status.Interfaces;
