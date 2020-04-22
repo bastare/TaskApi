@@ -33,7 +33,7 @@ namespace TaskApi.Controllers
                 throw new ArgumentNullException(nameof(config), $"DI doesn`t bind service : {config}");
 
             _unit = unit ??
-                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {unit}"); ;
+                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {unit}");
         }
 
         [HttpPost("authorization", Name = nameof(Authorization))]
