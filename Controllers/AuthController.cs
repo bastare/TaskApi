@@ -21,7 +21,6 @@ namespace TaskApi.Controllers
     [Route("{controller}")]
     public class AuthController : ControllerBase
     {
-        // readonly DataContext _context;
         readonly IMapper _mapper;
         readonly IConfiguration _config;
         readonly UnitOfWork<DataContext> _unit;
@@ -79,9 +78,5 @@ namespace TaskApi.Controllers
 
             return Unauthorized(new UnauthorizedError("Wrong login or password. Try again"));
         }
-
-        [HttpPost("testq")]
-        public IActionResult testModelq([FromQuery]TestDTO fun, [FromBody]TestDTO test) =>
-            Ok("yeap");
     }
 }
