@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TaskApi.Migrations
 {
-    public partial class first : Migration
+    public partial class addedEnum : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +15,8 @@ namespace TaskApi.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Login = table.Column<string>(type: "varchar(16)", nullable: false),
-                    Password = table.Column<string>(type: "varchar(16)", nullable: false)
+                    PasswordHash = table.Column<byte[]>(type: "tinyblob", nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "tinyblob", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,7 +30,7 @@ namespace TaskApi.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(32)", nullable: false),
-                    UserId = table.Column<long>(nullable: true)
+                    UserId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,7 +50,8 @@ namespace TaskApi.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(32)", nullable: false),
-                    Status = table.Column<bool>(nullable: false),
+                    Deadline = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<string>(type: "ENUM('Done','Expired','Onway')", nullable: false),
                     ProjectId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>

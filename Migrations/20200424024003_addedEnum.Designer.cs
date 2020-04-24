@@ -9,8 +9,8 @@ using TaskApi.Data;
 namespace TaskApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200422111139_first")]
-    partial class first
+    [Migration("20200424024003_addedEnum")]
+    partial class addedEnum
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,7 +29,7 @@ namespace TaskApi.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(32)");
 
-                    b.Property<long?>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -45,6 +45,10 @@ namespace TaskApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime?>("Deadline")
+                        .IsRequired()
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(32)");
@@ -52,8 +56,9 @@ namespace TaskApi.Migrations
                     b.Property<long?>("ProjectId")
                         .HasColumnType("bigint");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("ENUM('Done','Expired','Onway')");
 
                     b.HasKey("Id");
 
@@ -72,9 +77,13 @@ namespace TaskApi.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(16)");
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("varchar(16)");
+                        .HasColumnType("tinyblob");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("tinyblob");
 
                     b.HasKey("Id");
 
@@ -86,7 +95,8 @@ namespace TaskApi.Migrations
                     b.HasOne("TaskApi.Models.User", "User")
                         .WithMany("Projects")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TaskApi.Models.Task", b =>

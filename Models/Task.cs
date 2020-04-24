@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using TaskApi.Models.Interfaces;
 
@@ -7,8 +8,15 @@ namespace TaskApi.Models
     {
         [Required]
         public string Name { get; set; }
-        public bool Status { get; set; } = default;
+        [Required]
+        public DateTime? Deadline { get; set; }
 
+        public Status Status { get; set; } = Status.Onway;
         public Project Project { get; set; }
+    }
+
+    public enum Status
+    {
+        Done, Expired, Onway
     }
 }

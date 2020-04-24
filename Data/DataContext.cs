@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using TaskApi.Models;
 
@@ -34,7 +35,8 @@ namespace TaskApi.Data
             builder.Entity<Models.Task>(x =>
             {
                 x.Property(x => x.Name).HasColumnType("varchar(32)").IsRequired();
-                x.Property(x => x.Status).IsRequired();
+                x.Property(x => x.Status).HasColumnType("ENUM('Done','Expired','Onway')").IsRequired();
+                x.Property(x => x.Deadline).HasColumnType("DATE").IsRequired();
 
                 x.HasOne(x => x.Project).WithMany(x => x.Tasks).OnDelete(DeleteBehavior.Cascade);
             });

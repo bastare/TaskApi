@@ -11,7 +11,7 @@ namespace TaskApi.DTOs.UserDTOs
         public string Login { get; set; }
 
         [Required]
-        [RegularExpression(@"^[a-z0-9_-]{8,18}$")]
+        [RegularExpression(@"^[a-z0-9_-]{6,18}$")]
         public string Password { get; set; }
     }
 }

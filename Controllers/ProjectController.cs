@@ -26,11 +26,11 @@ namespace TaskApi.Controllers
                 throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bind service : {mapper}");
         }
 
-        [HttpGet("test", Name = nameof(GetTask))]
-        public Task<IActionResult> GetTask()
+        [HttpGet("get", Name = nameof(GetTask))]
+        public async Task<IActionResult> GetTask()
         {
 
-            return default;
+            return Ok(await _unit.ProjectRepository.GetAllAsync());
         }
     }
 }

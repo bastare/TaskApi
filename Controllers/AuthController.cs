@@ -55,8 +55,6 @@ namespace TaskApi.Controllers
         [HttpPost("authentication", Name = nameof(Authentication))]
         public async Task<IActionResult> Authentication(UserForAuthenticationDTO userForAthentication)
         {
-
-
             var authDate = await _unit.UserRepository.Authentication(
                 login: userForAthentication.Login,
                 password: userForAthentication.Password,
