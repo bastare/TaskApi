@@ -49,7 +49,7 @@ namespace TaskApi.Data.Repository
 
         public async Task<Tuple<string, User>> Authentication(string login, string password, IConfiguration config)
         {
-            var user = await _dbSet.FirstOrDefaultAsync(x => x.Login == login);
+            var user = await Context.Set<User>().FirstOrDefaultAsync(x => x.Login == login);
 
             if (user == null)
                 return null;
@@ -110,7 +110,7 @@ namespace TaskApi.Data.Repository
             if (login == null)
                 throw new ArgumentNullException(nameof(login));
 
-            return await _dbSet.AnyAsync(x => x.Login == login);
+            return await Context.Set<User>().AnyAsync(x => x.Login == login);
         }
     }
 }

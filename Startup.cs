@@ -54,7 +54,7 @@ namespace TaskApi
 
             services.AddMvcCore(opt =>
             {
-                opt.Filters.AddService<NullValidationFilter>();
+                // opt.Filters.AddService<NullValidationFilter>();
 
 
             }).AddNewtonsoftJson(opt =>

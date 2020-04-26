@@ -17,6 +17,14 @@ namespace TaskApi.Data
 
         TaskRepository<TContext> _taskRepo;
 
+        DataRepository<TContext> _dataRepo;
+
+
+        public DataRepository<TContext> DataRepository
+        {
+            get => _dataRepo ??= new DataRepository<TContext>(_context);
+        }
+
         public AuthRepository<TContext> UserRepository
         {
             get => _userRepo ??= new AuthRepository<TContext>(_context);

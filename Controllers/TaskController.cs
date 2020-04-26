@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using TaskApi.Data;
+using TaskApi.DTOs.TaskDTOs;
 
 namespace TaskApi.Controllers
 {
@@ -28,12 +29,42 @@ namespace TaskApi.Controllers
                 throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {unit}");
         }
 
-        [HttpGet("test", Name = nameof(GetAction))]
-        public async Task<IActionResult> GetAction()
+        [HttpPost("{id}/create/{projectId}", Name = nameof(CreateTask))]
+        public async Task<IActionResult> CreateTask(long id, long projectId, TaskForCreateDTO task)
         {
-            var result = await _unit.TaskRepository.GetAllAsync();
+            var mappedTask = _mapper.Map<Models.Task>(task);
 
-            return Ok(result);
+            var result = await _unit.TaskRepository.CreateTaskAsync(id, projectId, mappedTask);
+
+            if (!await _unit.Commit())
+                return BadRequest("Data wasn`t saved");
+
+            return Ok();
+        }
+
+        [HttpPost("{id}/update", Name = nameof(UpdateTask))]
+        public async Task<IActionResult> UpdateTask(long id, TaskForUpdateDTO task)
+        {
+
+            await _unit.TaskRepository.UpdateTaskAsync(task);
+
+            if (!await _unit.Commit())
+                return BadRequest("Data wasn`t saved");
+
+
+            return RedirectToAction("getData", "Data", new { controller = "Data", id = id });
+        }
+
+        [HttpDelete("{id}/remove", Name = nameof(RemoveTask))]
+        public async Task<IActionResult> RemoveTask(long id, TaskForRemoveDTO task)
+        {
+            await _unit.TaskRepository.RemoveTaskAsync(task);
+
+            if (!await _unit.Commit())
+                return BadRequest("Data wasn`t saved");
+
+            // return Ok("Project was deleted");
+            return RedirectToAction("getData", "Data", new { controller = "Data", id = id });
         }
     }
 }

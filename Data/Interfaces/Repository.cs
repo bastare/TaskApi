@@ -15,31 +15,32 @@ namespace TaskApi.Data.Interfaces
         where TEntity : Entity
         where TContext : DbContext
     {
-        readonly protected DbSet<TEntity> _dbSet;
+        protected DbContext Context { get; }
 
         public Repository(TContext context)
         {
-            _dbSet = context?.Set<TEntity>()
-                ?? throw new ArgumentNullException(nameof(context));
+            Context = context;
         }
 
-        public virtual async System.Threading.Tasks.Task AddAsync(TEntity entity, CancellationToken canselationsToken = default)
+        public virtual async Task<TEntity> AddAsync(TEntity entity, CancellationToken canselationsToken = default)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            await _dbSet.AddAsync(entity);
+            var result = await Context.Set<TEntity>().AddAsync(entity);
+
+            return result.Entity;
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken canselationsToken = default) =>
-            await System.Threading.Tasks.Task.Run(() => _dbSet.AsNoTracking().AsEnumerable());//.ToArrayAsync();
+            await Context.Set<TEntity>().ToArrayAsync();
 
         public virtual IAsyncEnumerable<TEntity> Filter(Expression<Func<TEntity, bool>> predicate)
         {
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            return _dbSet.Where(predicate).AsAsyncEnumerable();
+            return Context.Set<TEntity>().Where(predicate).AsAsyncEnumerable();
         }
 
         public virtual async Task<IEnumerable<TEntity>> FilterAsync(Expression<Func<TEntity, bool>> predicate)
@@ -47,7 +48,7 @@ namespace TaskApi.Data.Interfaces
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            return await _dbSet.AsNoTracking().Where(predicate).ToArrayAsync();
+            return await Context.Set<TEntity>().AsNoTracking().Where(predicate).ToArrayAsync();
         }
 
         public bool Remove(TEntity entity)
@@ -55,26 +56,22 @@ namespace TaskApi.Data.Interfaces
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            if (!_dbSet.Any(x => x.Id == entity.Id))
+            if (!Context.Set<TEntity>().Any(x => x.Id == entity.Id))
                 return false;
 
-            if (_dbSet.Remove(entity).State == EntityState.Deleted)
+            if (Context.Set<TEntity>().Remove(entity).State == EntityState.Deleted)
                 return true;
 
             return false;
         }
 
-        public void Update(TEntity currentEntity, TEntity entityModified)
+        public void Update(TEntity entity)
         {
-            if (currentEntity == null)
-                throw new ArgumentNullException(nameof(currentEntity));
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
 
-            if (entityModified == null)
-                throw new ArgumentNullException(nameof(entityModified));
-
-            currentEntity = entityModified;
-
-            _dbSet.Update(currentEntity).State = EntityState.Modified;
+            var result = Context.Set<TEntity>().Update(entity);
+            result.State = EntityState.Modified;
         }
 
         public virtual async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
@@ -82,10 +79,10 @@ namespace TaskApi.Data.Interfaces
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(predicate);
+            return await Context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
         public virtual async Task<TEntity> GetAsync(long id, CancellationToken canselationsToken = default) =>
-            await _dbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            await Context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 }

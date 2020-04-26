@@ -10,8 +10,8 @@ namespace TaskApi.Data.Interfaces
     {
         Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken canselationsToken = default);
         Task<TEntity> GetAsync(long id, CancellationToken canselationsToken = default);
-        System.Threading.Tasks.Task AddAsync(TEntity entity, CancellationToken canselationsToken = default);
-        void Update(TEntity currentEntity, TEntity modifiedEntity);
+        Task<TEntity> AddAsync(TEntity entity, CancellationToken canselationsToken = default);
+        void Update(TEntity entity);
         bool Remove(TEntity entity);
     }
 }

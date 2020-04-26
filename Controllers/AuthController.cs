@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-
-using AutoMapper;
 
 using TaskApi.Data;
 using TaskApi.DTOs.UserDTOs;
@@ -40,16 +40,16 @@ namespace TaskApi.Controllers
         public async Task<IActionResult> Authorization(UserForAuthorizationDTO userForAuthorization)
         {
             if (await _unit.UserRepository.IsUserExist(userForAuthorization.Login))
-                return BadRequest(new BadRequestError($"User with '{userForAuthorization.Login}' name, already exist"));
+                return BadRequest($"User with '{userForAuthorization.Login}' login, already exist");
 
             await _unit.UserRepository.Authorization(
                 login: userForAuthorization.Login,
                 password: userForAuthorization.Password
             );
 
-            return await _unit.Commit()
-                ? StatusCode(201)
-                : throw new Exception("Data wasn`t saved");
+            return await _unit.Commit() ?
+                StatusCode(201) :
+                throw new Exception("Data wasn`t saved");
         }
 
         [HttpPost("authentication", Name = nameof(Authentication))]
@@ -73,7 +73,7 @@ namespace TaskApi.Controllers
                     });
             }
 
-            return Unauthorized(new UnauthorizedError("Wrong login or password. Try again"));
+            return Unauthorized("Wrong login or password. Try again");
         }
     }
 }
