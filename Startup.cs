@@ -54,10 +54,11 @@ namespace TaskApi
 
             services.AddCors(o => o.AddPolicy("AllowAll", builder =>
                         {
-                            builder.WithOrigins("http://localhost:4200")
-                           .AllowAnyMethod()
-                           .AllowAnyHeader()
-                           .AllowCredentials();
+                            builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+
                         }));
             services.AddMvcCore(opt =>
             {
