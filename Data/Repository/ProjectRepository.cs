@@ -14,9 +14,7 @@ namespace TaskApi.Data.Repository
     {
         public ProjectRepository(TContext context) :
             base(context)
-        {
-
-        }
+        {}
 
         public async ValueTask<Project> CreateProjectAsync(long id, Project project)
         {
@@ -36,9 +34,9 @@ namespace TaskApi.Data.Repository
             await System.Threading.Tasks.Task.Run(() => Context.Update(currentEntity));
         }
 
-        public async System.Threading.Tasks.Task RemoveProjectAsync(ProjectForRemoveDTO project)
+        public async System.Threading.Tasks.Task RemoveProjectAsync(long id)
         {
-            var currentEntity = await Context.Set<Project>().FirstOrDefaultAsync(x => x.Id == project.Id);
+            var currentEntity = await Context.Set<Project>().FirstOrDefaultAsync(x => x.Id == id);
 
             await System.Threading.Tasks.Task.Run(() => Remove(currentEntity));
         }

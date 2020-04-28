@@ -52,6 +52,13 @@ namespace TaskApi
                opt.UseMySql(Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+                        {
+                            builder.WithOrigins("http://localhost:4200")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                        }));
             services.AddMvcCore(opt =>
             {
                 // opt.Filters.AddService<NullValidationFilter>();
@@ -62,7 +69,7 @@ namespace TaskApi
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
 
-            services.AddCors();
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -86,12 +93,15 @@ namespace TaskApi
 
             app.UseHttpsRedirection();
 
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors("AllowAll");
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {

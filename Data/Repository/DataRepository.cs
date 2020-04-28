@@ -16,40 +16,30 @@ namespace TaskApi.Data.Repository
         public DataRepository(TContext context) : base(context)
         { }
 
-        public async Task<IEnumerable> GetDataAsync(long id)
-        {
-            var result = from p in Context.Set<Project>()
+        public async Task<IEnumerable> GetDataAsync(long id) =>
+            await System.Threading.Tasks.Task.Run(() =>
+                from p in Context.Set<Project>()
 
-                             //  join t in Context.Set<Models.Task>() on p.Id equals t.Project.Id into joinTask
-                             //  from leftTask in joinTask.DefaultIfEmpty()
+                join u in Context.Set<User>() on p.User.Id equals u.Id into joinData
+                from leftUser in joinData.DefaultIfEmpty()
 
-                         join u in Context.Set<User>() on p.User.Id equals u.Id into joinData
-                         from leftUser in joinData.DefaultIfEmpty()
+                where p.User.Id == id
 
-                         where p.User.Id == id
+                select new
+                {
+                    UserId = leftUser.Id,
+                    ProjectId = p.Id,
+                    ProjectName = p.Name,
 
-                         select new
-                         {
-                             UserId = leftUser.Id, //TODO: remove after prod
-
-                             ProjectId = p.Id,
-                             ProjectName = p.Name,
-
-                             Tasks = p.Tasks.Select(x => new
-                             {
-                                 x.Id,
-                                 x.Name,
-                                 x.Priority,
-                                 x.Deadline
-                             })
-
-                         };
-
-            return await System.Threading.Tasks.Task.Run(() => result);
-        }
-
-
-
-
+                    Tasks = p.Tasks.Select(x => new
+                    {
+                        x.Id,
+                        x.Name,
+                        x.Priority,
+                        x.Deadline,
+                        x.Status
+                    })
+                }
+            );
     }
 }

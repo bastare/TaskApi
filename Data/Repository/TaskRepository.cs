@@ -28,19 +28,38 @@ namespace TaskApi.Data.Repository
 
             currentEntity.Name = task.Name;
             currentEntity.Deadline = task.Deadline;
-            currentEntity.Priority = task.Priority;
 
             await System.Threading.Tasks.Task.Run(() => Context.Update(currentEntity));
         }
 
-        public async System.Threading.Tasks.Task RemoveTaskAsync(TaskForRemoveDTO task)
-        {
-            var currentEntity = await Context.Set<Models.Task>().FirstOrDefaultAsync(x => x.Id == task.Id);
 
-            await System.Threading.Tasks.Task.Run(() => Remove(currentEntity));
+        public async System.Threading.Tasks.Task UpdateStatusAsync(TaskForUpdateStatus task)
+        {
+            var currentEntity = Context.Set<Models.Task>().FirstOrDefault(x => x.Id == task.Id);
+
+            currentEntity.Status = task.Status;
+
+            await System.Threading.Tasks.Task.Run(() => Context.Update(currentEntity));
         }
 
 
+        public async System.Threading.Tasks.Task UpdatePrioratyAsync(TaskForUpdatePriority tasks) =>
+            await System.Threading.Tasks.Task.Run(() =>
+            {
+                foreach (var task in tasks.Tasks)
+                {
+                    var currentEntity = Context.Set<Models.Task>().FirstOrDefault(x => x.Id == task.Id);
 
+                    currentEntity.Priority = task.Priority;
+                }
+            });
+
+
+        public async System.Threading.Tasks.Task RemoveTaskAsync(long id)
+        {
+            var currentEntity = await Context.Set<Models.Task>().FirstOrDefaultAsync(x => x.Id == id);
+
+            await System.Threading.Tasks.Task.Run(() => Remove(currentEntity));
+        }
     }
 }

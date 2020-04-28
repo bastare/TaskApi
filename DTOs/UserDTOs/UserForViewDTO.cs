@@ -7,6 +7,5 @@ namespace TaskApi.DTOs.UserDTOs
     {
         public long Id { get; set; }
         public string Login { get; set; }
-        public ICollection<Project> Projects { get; set; }
     }
 }

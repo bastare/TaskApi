@@ -29,6 +29,7 @@ namespace TaskApi.Controllers
                 throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {unit}");
         }
 
+
         [HttpPost("{id}/create/{projectId}", Name = nameof(CreateTask))]
         public async Task<IActionResult> CreateTask(long id, long projectId, TaskForCreateDTO task)
         {
@@ -42,7 +43,7 @@ namespace TaskApi.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}/update", Name = nameof(UpdateTask))]
+        [HttpPut("{id}/update", Name = nameof(UpdateTask))]
         public async Task<IActionResult> UpdateTask(long id, TaskForUpdateDTO task)
         {
 
@@ -51,20 +52,43 @@ namespace TaskApi.Controllers
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-
-            return RedirectToAction("getData", "Data", new { controller = "Data", id = id });
+            return Ok();
         }
 
-        [HttpDelete("{id}/remove", Name = nameof(RemoveTask))]
-        public async Task<IActionResult> RemoveTask(long id, TaskForRemoveDTO task)
+
+        [HttpPut("{id}/updateStatus", Name = nameof(UpdateTaskStatus))]
+        public async Task<IActionResult> UpdateTaskStatus(long id, TaskForUpdateStatus task)
         {
-            await _unit.TaskRepository.RemoveTaskAsync(task);
+
+            await _unit.TaskRepository.UpdateStatusAsync(task);
 
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-            // return Ok("Project was deleted");
-            return RedirectToAction("getData", "Data", new { controller = "Data", id = id });
+            return Ok();
+        }
+
+        [HttpPut("{id}/updatePrioraty", Name = nameof(UpdateTaskPrioraty))]
+        public async Task<IActionResult> UpdateTaskPrioraty(long id, TaskForUpdatePriority task)
+        {
+
+            await _unit.TaskRepository.UpdatePrioratyAsync(task);
+
+            if (!await _unit.Commit())
+                return BadRequest("Data wasn`t saved");
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}/remove/{taskId}", Name = nameof(RemoveTask))]
+        public async Task<IActionResult> RemoveTask(long id, long taskId)
+        {
+            await _unit.TaskRepository.RemoveTaskAsync(taskId);
+
+            if (!await _unit.Commit())
+                return BadRequest("Data wasn`t saved");
+
+            return Ok();
         }
     }
 }

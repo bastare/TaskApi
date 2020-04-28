@@ -28,16 +28,15 @@ namespace TaskApi.Controllers
                 throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bind service : {mapper}");
         }
 
-        [HttpPost("{id}/update", Name = nameof(UpdateProject))]
+        [HttpPut("{id}/update", Name = nameof(UpdateProject))]
         public async Task<IActionResult> UpdateProject(long id, ProjectForUpdateDTO project)
         {
-
             await _unit.ProjectRepository.UpdateProjectAsync(project);
 
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-            return RedirectToAction("getData", "Data", new { controller = "Data", id = id });
+            return Ok();
         }
 
 
@@ -53,22 +52,18 @@ namespace TaskApi.Controllers
 
             var mappedResult = _mapper.Map<ProjectForViewDTO>(result);
 
-            // return Ok(mappedResult);
-            return RedirectToAction("getData", "Data", new { controller = "Data", id = id });
+            return Ok();
         }
 
-        [HttpDelete("{id}/remove", Name = nameof(RemoveProject))]
-        public async Task<IActionResult> RemoveProject(long id, ProjectForRemoveDTO project)
+        [HttpDelete("{id}/remove/{projectId}", Name = nameof(RemoveProject))]
+        public async Task<IActionResult> RemoveProject(long id, long projectId)
         {
-            await _unit.ProjectRepository.RemoveProjectAsync(project);
+            await _unit.ProjectRepository.RemoveProjectAsync(projectId);
 
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-            // return Ok("Project was deleted");
-            return RedirectToAction("getData", "Data", new { controller = "Data", id = id });
+            return Ok();
         }
-
-
     }
 }

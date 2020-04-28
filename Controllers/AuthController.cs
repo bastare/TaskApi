@@ -17,7 +17,7 @@ using TaskApi.Models;
 namespace TaskApi.Controllers
 {
     [ApiController]
-    [Route("{controller}")]
+    [Route("api/{controller}")]
     public class AuthController : ControllerBase
     {
         readonly IMapper _mapper;
