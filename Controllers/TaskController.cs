@@ -43,6 +43,10 @@ namespace TaskApi.Controllers
             return Ok();
         }
 
+        [HttpGet("{id}/get", Name = nameof(GetTask))]
+        public async Task<IActionResult> GetTask(long id) =>
+           Ok(await _unit.TaskRepository.GetAsync(id));
+
         [HttpPut("{id}/update", Name = nameof(UpdateTask))]
         public async Task<IActionResult> UpdateTask(long id, TaskForUpdateDTO task)
         {
