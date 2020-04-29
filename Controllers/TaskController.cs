@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using TaskApi.Data;
@@ -9,6 +9,7 @@ using TaskApi.DTOs.TaskDTOs;
 
 namespace TaskApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("{controller}")]
     public class TaskController : ControllerBase

@@ -13,7 +13,7 @@ using TaskApi.DTOs.ProjectDTOs;
 namespace TaskApi.Controllers
 {
 
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("{controller}")]
     public class DataController : ControllerBase
