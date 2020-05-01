@@ -53,7 +53,6 @@ namespace TaskApi.Data.Repository
                 foreach (var task in tasks.Tasks)
                 {
                     var currentEntity = Context.Set<Models.Task>().FirstOrDefault(x => x.Id == task.Id);
-
                     currentEntity.Priority = task.Priority;
                 }
             });

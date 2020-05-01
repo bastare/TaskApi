@@ -60,7 +60,7 @@ namespace TaskApi
                 )
             );
 
-            services.AddMvcCore(/*opt => /*opt.Filters.AddService<NullValidationFilter>() */)
+            services.AddMvcCore(opt => opt.Filters.AddService<NullValidationFilter>())
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 
@@ -80,11 +80,12 @@ namespace TaskApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
+            {
+                app.UseCors("AllowAll");
                 app.UseDeveloperExceptionPage();
+            }
 
             app.UseHttpsRedirection();
-
-            app.UseCors("AllowAll");
 
             app.UseRouting();
 
