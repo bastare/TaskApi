@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using TaskApi.Models.Interfaces;
 
-namespace TaskApi.Data.Interfaces
+namespace TaskApi.Data.Repository.Interfaces
 {
 
     public abstract class Repository<TEntity, TContext> : IRepository<TEntity>

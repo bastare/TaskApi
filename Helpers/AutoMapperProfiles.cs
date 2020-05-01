@@ -18,6 +18,7 @@ namespace TaskApi.Helpers
             CreateMap<Project, ProjectForCreateDTO>().ReverseMap();
 
             CreateMap<Models.Task, TaskForCreateDTO>().ReverseMap();
+            CreateMap<Models.Task, TaskForViewDTO>().ReverseMap();
         }
     }
 }

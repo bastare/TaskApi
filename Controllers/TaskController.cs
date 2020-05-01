@@ -9,7 +9,7 @@ using TaskApi.DTOs.TaskDTOs;
 
 namespace TaskApi.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [ApiController]
     [Route("{controller}")]
     public class TaskController : ControllerBase
@@ -41,7 +41,13 @@ namespace TaskApi.Controllers
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-            return Ok();
+            var mappedResult = _mapper.Map<TaskForViewDTO>(result);
+
+            return CreatedAtAction(
+                nameof(GetTask),
+                new { id },
+                mappedResult
+            );
         }
 
         [HttpGet("{id}/get", Name = nameof(GetTask))]
@@ -52,12 +58,18 @@ namespace TaskApi.Controllers
         public async Task<IActionResult> UpdateTask(long id, TaskForUpdateDTO task)
         {
 
-            await _unit.TaskRepository.UpdateTaskAsync(task);
+            var result = await _unit.TaskRepository.UpdateTaskAsync(task);
 
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-            return Ok();
+            var mappedResult = _mapper.Map<TaskForViewDTO>(result);
+
+            return CreatedAtAction(
+               nameof(GetTask),
+               new { id },
+               mappedResult
+           );
         }
 
 
@@ -97,3 +109,9 @@ namespace TaskApi.Controllers
         }
     }
 }
+
+// return RedirectToAction(
+//     actionName: nameof(DataController.GetTasks),
+//     controllerName: "Data",
+//     new { id, projectId }
+// );

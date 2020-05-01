@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
-using TaskApi.Data.Interfaces;
+
+using TaskApi.Data.Repository.Interfaces;
 using TaskApi.DTOs.ProjectDTOs;
 using TaskApi.Models;
 
@@ -14,7 +16,7 @@ namespace TaskApi.Data.Repository
     {
         public ProjectRepository(TContext context) :
             base(context)
-        {}
+        { }
 
         public async ValueTask<Project> CreateProjectAsync(long id, Project project)
         {

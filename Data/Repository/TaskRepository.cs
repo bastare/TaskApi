@@ -1,7 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
-using TaskApi.Data.Interfaces;
+
+using TaskApi.Data.Repository.Interfaces;
 using TaskApi.DTOs.TaskDTOs;
 using TaskApi.Models;
 
@@ -22,7 +24,7 @@ namespace TaskApi.Data.Repository
             return await AddAsync(task);
         }
 
-        public async System.Threading.Tasks.Task UpdateTaskAsync(TaskForUpdateDTO task)
+        public async System.Threading.Tasks.Task<Models.Task> UpdateTaskAsync(TaskForUpdateDTO task)
         {
             var currentEntity = Context.Set<Models.Task>().FirstOrDefault(x => x.Id == task.Id);
 
@@ -30,6 +32,8 @@ namespace TaskApi.Data.Repository
             currentEntity.Deadline = task.Deadline;
 
             await System.Threading.Tasks.Task.Run(() => Context.Update(currentEntity));
+
+            return currentEntity;
         }
 
 

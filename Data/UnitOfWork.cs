@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
-using TaskApi.Data.Interfaces;
+
+using TaskApi.Data.Repository.Interfaces;
 using TaskApi.Data.Repository;
 
 namespace TaskApi.Data

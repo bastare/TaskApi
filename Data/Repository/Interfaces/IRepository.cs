@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using TaskApi.Models.Interfaces;
 
-namespace TaskApi.Data.Interfaces
+namespace TaskApi.Data.Repository.Interfaces
 {
     public interface IRepository<TEntity> where TEntity : Entity
     {
