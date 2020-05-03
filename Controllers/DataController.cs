@@ -13,7 +13,7 @@ using TaskApi.DTOs.ProjectDTOs;
 namespace TaskApi.Controllers
 {
 
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("{controller}")]
     public class DataController : ControllerBase
@@ -40,7 +40,7 @@ namespace TaskApi.Controllers
         }
 
 
-        [HttpGet("{id}/getTasks{projectId}", Name = nameof(GetTasks))]
+        [HttpGet("{id}/getTasks/{projectId}", Name = nameof(GetTasks))]
         public async Task<IActionResult> GetTasks(long id, long projectId)
         {
             var result = await _unit.DataRepository.GetTasksAsync(id, projectId);

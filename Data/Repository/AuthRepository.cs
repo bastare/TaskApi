@@ -26,7 +26,7 @@ namespace TaskApi.Data.Repository
             if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(login))
                 throw new ArgumentNullException($"{nameof(password)} or {nameof(login)}");
 
-            (byte[] passwordHash, byte[] passwordSalt) = GetPasswordHash(password);
+            (byte[] passwordHash, byte[] passwordSalt) = _GetPasswordHash(password);
 
             var user = new User
             {
@@ -38,9 +38,10 @@ namespace TaskApi.Data.Repository
             await AddAsync(user);
         }
 
-        (byte[], byte[]) GetPasswordHash(string password)
+        (byte[], byte[]) _GetPasswordHash(string password)
         {
             using var hmac = new HMACSHA512();
+
             byte[] passwordSalt = hmac.Key;
             byte[] passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
 
@@ -54,15 +55,15 @@ namespace TaskApi.Data.Repository
             if (user == null)
                 return null;
 
-            if (!VarifyPassword(password, user.PasswordHash, user.PasswordSalt))
+            if (!_VarifyPassword(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 
-            var token = CreateToken(user, config);
+            var token = _CreateToken(user, config);
 
             return new Tuple<string, User>(token, user);
         }
 
-        bool VarifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
+        bool _VarifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using var hmac = new HMACSHA512(passwordSalt);
 
@@ -75,7 +76,7 @@ namespace TaskApi.Data.Repository
             return true;
         }
 
-        string CreateToken(User user, IConfiguration config)
+        string _CreateToken(User user, IConfiguration config)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));

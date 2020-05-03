@@ -9,7 +9,7 @@ using TaskApi.DTOs.TaskDTOs;
 
 namespace TaskApi.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("{controller}")]
     public class TaskController : ControllerBase
@@ -41,12 +41,13 @@ namespace TaskApi.Controllers
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-            var mappedResult = _mapper.Map<TaskForViewDTO>(result);
+            var mappedResult = _mapper.Map<TaskForViewDTO>(result) ??
+                throw new ArgumentNullException();
 
             return CreatedAtAction(
-                nameof(GetTask),
-                new { id },
-                mappedResult
+                actionName: nameof(GetTask),
+                routeValues: new { id },
+                value: mappedResult
             );
         }
 
@@ -63,15 +64,15 @@ namespace TaskApi.Controllers
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-            var mappedResult = _mapper.Map<TaskForViewDTO>(result);
+            var mappedResult = _mapper.Map<TaskForViewDTO>(result) ??
+                throw new ArgumentNullException();
 
             return CreatedAtAction(
-               nameof(GetTask),
-               new { id },
-               mappedResult
+                actionName: nameof(GetTask),
+                routeValues: new { id },
+                value: mappedResult
            );
         }
-
 
         [HttpPut("{id}/updateStatus", Name = nameof(UpdateTaskStatus))]
         public async Task<IActionResult> UpdateTaskStatus(long id, TaskForUpdateStatus task)
@@ -109,9 +110,3 @@ namespace TaskApi.Controllers
         }
     }
 }
-
-// return RedirectToAction(
-//     actionName: nameof(DataController.GetTasks),
-//     controllerName: "Data",
-//     new { id, projectId }
-// );

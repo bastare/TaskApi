@@ -47,9 +47,10 @@ namespace TaskApi.Controllers
                 password: userForAuthorization.Password
             );
 
-            return await _unit.Commit() ?
-                StatusCode(201) :
-                throw new Exception("Data wasn`t saved");
+            if (!await _unit.Commit())
+                return BadRequest("Data wasn`t saved");
+
+            return StatusCode(201);
         }
 
         [HttpPost("authentication", Name = nameof(Authentication))]
@@ -61,19 +62,17 @@ namespace TaskApi.Controllers
                 config: _config
             );
 
-            if (authDate != null)
-            {
-                (string token, User user) = authDate;
+            if (authDate is null)
+                return Unauthorized("Wrong login or password. Try again");
 
-                return Ok(
-                    new
-                    {
-                        token = token,
-                        user = _mapper.Map<UserForViewDTO>(user)
-                    });
-            }
+            (string token, User user) = authDate;
 
-            return Unauthorized("Wrong login or password. Try again");
+            return Ok(
+                new
+                {
+                    token,
+                    user = _mapper.Map<UserForViewDTO>(user)
+                });
         }
     }
 }

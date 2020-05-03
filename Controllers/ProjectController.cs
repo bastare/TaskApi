@@ -45,12 +45,14 @@ namespace TaskApi.Controllers
         {
             var mappedProject = _mapper.Map<Project>(project);
 
-            var result = await _unit.ProjectRepository.CreateProjectAsync(id, mappedProject);
+            var result = await _unit.ProjectRepository.CreateProjectAsync(id, mappedProject) ??
+                throw new ArgumentNullException();
 
             if (!await _unit.Commit())
                 return BadRequest("Data wasn`t saved");
 
-            var mappedResult = _mapper.Map<ProjectForViewDTO>(result);
+            var mappedResult = _mapper.Map<ProjectForViewDTO>(result) ??
+                throw new ArgumentNullException();
 
             return Ok();
         }
