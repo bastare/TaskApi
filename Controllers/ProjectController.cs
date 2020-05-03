@@ -28,7 +28,7 @@ namespace TaskApi.Controllers
                 throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bind service : {mapper}");
         }
 
-        [HttpPut("{id}/update", Name = nameof(UpdateProject))]
+        [HttpPut("{id:long}/update", Name = nameof(UpdateProject))]
         public async Task<IActionResult> UpdateProject(long id, ProjectForUpdateDTO project)
         {
             await _unit.ProjectRepository.UpdateProjectAsync(project);
@@ -40,7 +40,7 @@ namespace TaskApi.Controllers
         }
 
 
-        [HttpPost("{id}/create", Name = nameof(CreateProject))]
+        [HttpPost("{id:long}/create", Name = nameof(CreateProject))]
         public async Task<IActionResult> CreateProject(long id, ProjectForCreateDTO project)
         {
             var mappedProject = _mapper.Map<Project>(project);
@@ -57,7 +57,7 @@ namespace TaskApi.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}/remove/{projectId}", Name = nameof(RemoveProject))]
+        [HttpDelete("{id:long}/remove/{projectId:long}", Name = nameof(RemoveProject))]
         public async Task<IActionResult> RemoveProject(long id, long projectId)
         {
             await _unit.ProjectRepository.RemoveProjectAsync(projectId);

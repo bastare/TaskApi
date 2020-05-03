@@ -31,7 +31,7 @@ namespace TaskApi.Controllers
         }
 
 
-        [HttpGet("{id}/getData", Name = nameof(GetData))]
+        [HttpGet("{id:long}/getData", Name = nameof(GetData))]
         public async Task<IActionResult> GetData(long id)
         {
             var result = await _unit.DataRepository.GetDataAsync(id);
@@ -40,7 +40,7 @@ namespace TaskApi.Controllers
         }
 
 
-        [HttpGet("{id}/getTasks/{projectId}", Name = nameof(GetTasks))]
+        [HttpGet("{id:long}/getTasks/{projectId}", Name = nameof(GetTasks))]
         public async Task<IActionResult> GetTasks(long id, long projectId)
         {
             var result = await _unit.DataRepository.GetTasksAsync(id, projectId);

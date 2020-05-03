@@ -31,7 +31,7 @@ namespace TaskApi.Controllers
         }
 
 
-        [HttpPost("{id}/create/{projectId}", Name = nameof(CreateTask))]
+        [HttpPost("{id:long}/create/{projectId:long}", Name = nameof(CreateTask))]
         public async Task<IActionResult> CreateTask(long id, long projectId, TaskForCreateDTO task)
         {
             var mappedTask = _mapper.Map<Models.Task>(task);
@@ -51,11 +51,11 @@ namespace TaskApi.Controllers
             );
         }
 
-        [HttpGet("{id}/get", Name = nameof(GetTask))]
+        [HttpGet("{id:long}/get", Name = nameof(GetTask))]
         public async Task<IActionResult> GetTask(long id) =>
            Ok(await _unit.TaskRepository.GetAsync(id));
 
-        [HttpPut("{id}/update", Name = nameof(UpdateTask))]
+        [HttpPut("{id:long}/update", Name = nameof(UpdateTask))]
         public async Task<IActionResult> UpdateTask(long id, TaskForUpdateDTO task)
         {
 
@@ -74,7 +74,7 @@ namespace TaskApi.Controllers
            );
         }
 
-        [HttpPut("{id}/updateStatus", Name = nameof(UpdateTaskStatus))]
+        [HttpPut("{id:long}/updateStatus", Name = nameof(UpdateTaskStatus))]
         public async Task<IActionResult> UpdateTaskStatus(long id, TaskForUpdateStatus task)
         {
 
@@ -86,7 +86,7 @@ namespace TaskApi.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}/updatePrioraty", Name = nameof(UpdateTaskPrioraty))]
+        [HttpPut("{id:long}/updatePrioraty", Name = nameof(UpdateTaskPrioraty))]
         public async Task<IActionResult> UpdateTaskPrioraty(long id, TaskForUpdatePriority task)
         {
 
@@ -98,7 +98,7 @@ namespace TaskApi.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}/remove/{taskId}", Name = nameof(RemoveTask))]
+        [HttpDelete("{id:long}/remove/{taskId:long}", Name = nameof(RemoveTask))]
         public async Task<IActionResult> RemoveTask(long id, long taskId)
         {
             await _unit.TaskRepository.RemoveTaskAsync(taskId);
