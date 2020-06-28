@@ -21,13 +21,13 @@ namespace TaskApi.Controllers
         public TaskController(UnitOfWork<DataContext> unit, IMapper mapper, IConfiguration config)
         {
             _mapper = mapper ??
-                throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bind service : {mapper}");
+                throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bind service : {typeof(IMapper)}");
 
             _config = config ??
-                throw new ArgumentNullException(nameof(config), $"DI doesn`t bind service : {config}");
+                throw new ArgumentNullException(nameof(config), $"DI doesn`t bind service : {typeof(IConfiguration)}");
 
             _unit = unit ??
-                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {unit}");
+                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {typeof(UnitOfWork<>)}");
         }
 
 

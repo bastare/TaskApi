@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 
 using TaskApi.Data;
 using System.Threading.Tasks;
-using TaskApi.Models;
-using TaskApi.DTOs.ProjectDTOs;
+using TaskApi.DTOs.ProjectDTOs.Pagination;
+using TaskApi.Helpers.Extensions;
 
 namespace TaskApi.Controllers
 {
@@ -32,9 +32,12 @@ namespace TaskApi.Controllers
 
 
         [HttpGet("{id:long}/getData", Name = nameof(GetData))]
-        public async Task<IActionResult> GetData(long id)
+        public async Task<IActionResult> GetData(long id, [FromQuery]ProjectParameters projectParameters)
         {
-            var result = await _unit.DataRepository.GetDataAsync(id);
+            var result = await _unit.DataRepository.GetDataAsync(id, projectParameters);
+            
+            Response.AddPagination(result.CurrentPage, result.PageSize, 
+                result.TotalCount, result.TotalPages);
 
             return Ok(result);
         }
