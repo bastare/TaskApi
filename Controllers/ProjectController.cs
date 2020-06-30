@@ -12,7 +12,6 @@ using TaskApi.DTOs.ProjectDTOs;
 
 namespace TaskApi.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("{controller}")]
     public class ProjectController : ControllerBase
@@ -22,10 +21,10 @@ namespace TaskApi.Controllers
         public ProjectController(UnitOfWork<DataContext> unit, IMapper mapper)
         {
             _unit = unit ??
-                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {unit}");
+               throw new ArgumentNullException(nameof(unit), $"DI doesn`t bound service : {typeof(UnitOfWork<>)}");
 
             _mapper = mapper ??
-                throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bind service : {mapper}");
+                throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bound service : {typeof(IMapper)}");
         }
 
         [HttpPut("{id:long}/update", Name = nameof(UpdateProject))]

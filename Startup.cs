@@ -16,6 +16,10 @@ using TaskApi.Filter;
 using TaskApi.Data.Repository.Interfaces;
 using TaskApi.Data.Repository;
 using TaskApi.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using TaskApi.Helpers.Seed;
 
 namespace TaskApi
 {
@@ -25,12 +29,12 @@ namespace TaskApi
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<NullValidationFilter>();
+            services.AddTransient<Seed>();
 
             services.AddScoped<IRepository<User>, AuthRepository<DataContext>>();
             services.AddScoped<IRepository<Project>, ProjectRepository<DataContext>>();
@@ -45,6 +49,22 @@ namespace TaskApi
                opt.UseMySql(Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            IdentityBuilder builder = services.AddIdentityCore<User>(opt =>
+            {
+                opt.Password.RequireDigit = false;
+                opt.Password.RequiredLength = 6;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
+            });
+
+            builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
+            builder.AddEntityFrameworkStores<DataContext>();
+            builder.AddRoleValidator<RoleValidator<Role>>();
+            builder.AddRoleManager<RoleManager<Role>>();
+            builder.AddSignInManager<SignInManager<User>>();
+
+
             services.AddCors(o => o.AddPolicy("AllowAll", builder =>
                         builder
                         .AllowAnyOrigin()
@@ -53,7 +73,16 @@ namespace TaskApi
                 )
             );
 
-            services.AddMvcCore(opt => opt.Filters.AddService<NullValidationFilter>())
+            services.AddMvcCore(opt => 
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                opt.Filters.Add(new AuthorizeFilter(policy));
+
+                opt.Filters.AddService<NullValidationFilter>();
+            })
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 

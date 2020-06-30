@@ -1,27 +1,39 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using TaskApi.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace TaskApi.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<
+            User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>
+        >
     {
         public DataContext(DbContextOptions<DataContext> options) :
             base(options)
         { }
-        public DbSet<User> User { get; set; }
+
         public DbSet<Project> Project { get; set; }
         public DbSet<Models.Task> Task { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<User>(x =>
-            {
-                x.Property(x => x.Login).HasColumnType("varchar(16)").IsRequired();
-                x.Property(x => x.PasswordHash).HasColumnType("tinyblob").IsRequired();
-                x.Property(x => x.PasswordSalt).HasColumnType("tinyblob").IsRequired();
+            base.OnModelCreating(builder);
 
-                x.HasMany(x => x.Projects).WithOne(o => o.User);
+            builder.Entity<UserRole>(userRole =>
+            {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
             });
 
             builder.Entity<Project>(x =>

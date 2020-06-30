@@ -9,7 +9,7 @@ using TaskApi.Data.Repository;
 namespace TaskApi.Data
 {
     public sealed class UnitOfWork<TContext> : IUnitOfWork
-        where TContext : DbContext
+        where TContext : DataContext
     {
         readonly TContext _context;
 
@@ -27,7 +27,7 @@ namespace TaskApi.Data
             get => _dataRepo ??= new DataRepository<TContext>(_context);
         }
 
-        public AuthRepository<TContext> UserRepository
+        public AuthRepository<TContext> AuthRepository
         {
             get => _userRepo ??= new AuthRepository<TContext>(_context);
         }

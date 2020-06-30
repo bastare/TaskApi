@@ -10,7 +10,7 @@ using TaskApi.Models;
 namespace TaskApi.Data.Repository
 {
     public sealed class TaskRepository<TContext> : Repository<Models.Task, TContext>
-        where TContext : DbContext
+        where TContext : DataContext
     {
         public TaskRepository(TContext context) :
             base(context)

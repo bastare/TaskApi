@@ -12,10 +12,10 @@ namespace TaskApi.Data.Repository.Interfaces
 {
 
     public abstract class Repository<TEntity, TContext> : IRepository<TEntity>
-        where TEntity : Entity
-        where TContext : DbContext
+        where TEntity : class, IEntity
+        where TContext : DataContext
     {
-        protected DbContext Context { get; }
+        protected DataContext Context { get; }
 
         public Repository(TContext context)
         {

@@ -12,8 +12,6 @@ using TaskApi.Helpers.Extensions;
 
 namespace TaskApi.Controllers
 {
-
-    [Authorize]
     [ApiController]
     [Route("{controller}")]
     public class DataController : ControllerBase
@@ -23,11 +21,11 @@ namespace TaskApi.Controllers
 
         public DataController(UnitOfWork<DataContext> unit, IMapper mapper)
         {
-            _unit = unit ??
-                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {unit}");
-
             _mapper = mapper ??
-                throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bind service : {mapper}");
+                throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bound service : {typeof(IMapper)}");
+
+            _unit = unit ??
+                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bound service : {typeof(UnitOfWork<>)}");
         }
 
 

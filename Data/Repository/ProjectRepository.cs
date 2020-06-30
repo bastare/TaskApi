@@ -12,7 +12,7 @@ namespace TaskApi.Data.Repository
 {
 
     public sealed class ProjectRepository<TContext> : Repository<Project, TContext>
-        where TContext : DbContext
+        where TContext : DataContext
     {
         public ProjectRepository(TContext context) :
             base(context)

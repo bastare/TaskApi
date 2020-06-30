@@ -6,8 +6,10 @@ using TaskApi.Models.Interfaces;
 
 namespace TaskApi.Models
 {
-    public class Project : Entity
+    public class Project : IEntity
     {
+        [Required]
+        public long Id { get; set; }
         [Required]
         public string Name { get; set; }
 

@@ -8,7 +8,7 @@ namespace TaskApi.DTOs.UserDTOs
     {
         [Required]
         [RegularExpression(@"^[a-z0-9_-]{3,16}$")]
-        public string Login { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         [RegularExpression(@"^[a-z0-9_-]{6,18}$")]

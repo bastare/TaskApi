@@ -2,10 +2,10 @@ namespace TaskApi.Helpers.Paginattion
 {
     public class PaginationHeaders
     {
-        public int CurrentPage { get; set; }
-        public int ItemsPerPage { get; set; }
-        public int TotalItems { get; set; }
-        public int TotalPages { get; set; }
+        public int CurrentPage { get;  }
+        public int ItemsPerPage { get; }
+        public int TotalItems { get; }
+        public int TotalPages { get; }
 
         public PaginationHeaders(int currentPage, int itemsPerPages, int totalItems, int totalPages)
         {

@@ -6,7 +6,7 @@ using TaskApi.Models.Interfaces;
 
 namespace TaskApi.Data.Repository.Interfaces
 {
-    public interface IRepository<TEntity> where TEntity : Entity
+    public interface IRepository<TEntity> where TEntity : IEntity
     {
         Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken canselationsToken = default);
         Task<TEntity> GetAsync(long id, CancellationToken canselationsToken = default);

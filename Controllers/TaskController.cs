@@ -9,7 +9,6 @@ using TaskApi.DTOs.TaskDTOs;
 
 namespace TaskApi.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("{controller}")]
     public class TaskController : ControllerBase

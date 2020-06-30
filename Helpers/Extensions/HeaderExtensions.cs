@@ -10,13 +10,12 @@ namespace TaskApi.Helpers.Extensions
         public static void AddPagination(this HttpResponse response, 
             int currentPage, int itemsPerPage, int totalItems, int totalPages)
         {
-            
             var paginationHeader = new PaginationHeaders(currentPage, itemsPerPage, totalItems, totalPages);
 
             var camelCaseFormatter = new JsonSerializerSettings();
             camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
-            response.Headers.Add("Pagination", JsonConvert.SerializeObject(paginationHeader,camelCaseFormatter));
+            response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationHeader,camelCaseFormatter));
             response.Headers.Add("Access-Control-Expose-Headers", "Pagination");
         }
     }

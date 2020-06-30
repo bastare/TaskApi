@@ -1,21 +1,21 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 using TaskApi.Data;
 using TaskApi.DTOs.UserDTOs;
-using TaskApi.Helpers.Status;
-using TaskApi.Helpers.Status.Interfaces;
+using TaskApi.Helpers;
 using TaskApi.Models;
 
 namespace TaskApi.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/{controller}")]
     public class AuthController : ControllerBase
@@ -23,49 +23,68 @@ namespace TaskApi.Controllers
         readonly IMapper _mapper;
         readonly IConfiguration _config;
         readonly UnitOfWork<DataContext> _unit;
+        readonly UserManager<User> _userManager;
+        readonly SignInManager<User> _signInManager;
 
-        public AuthController(UnitOfWork<DataContext> unit, IMapper mapper, IConfiguration config)
+        public AuthController(
+            UnitOfWork<DataContext> unit,
+            IMapper mapper,
+            IConfiguration config,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager
+        )
         {
+            _userManager = userManager ??
+                throw new ArgumentNullException(nameof(userManager), $"DI doesn`t bound service : {typeof(UserManager<>)}");
+
+            _signInManager = signInManager ??
+                throw new ArgumentNullException(nameof(signInManager), $"DI doesn`t bound service : {typeof(SignInManager<>)}");
+
             _mapper = mapper ??
-                throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bind service : {mapper}");
+                throw new ArgumentNullException(nameof(mapper), $"DI doesn`t bound service : {typeof(IMapper)}");
 
             _config = config ??
-                throw new ArgumentNullException(nameof(config), $"DI doesn`t bind service : {config}");
+                throw new ArgumentNullException(nameof(config), $"DI doesn`t bound service : {typeof(IConfiguration)}");
 
             _unit = unit ??
-                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bind service : {unit}");
+                throw new ArgumentNullException(nameof(unit), $"DI doesn`t bound service : {typeof(UnitOfWork<>)}");
         }
 
         [HttpPost("authorization", Name = nameof(Authorization))]
         public async Task<IActionResult> Authorization(UserForAuthorizationDTO userForAuthorization)
         {
-            if (await _unit.UserRepository.IsUserExist(userForAuthorization.Login))
-                return BadRequest($"User with '{userForAuthorization.Login}' login, already exist");
+            var mappedUser = _mapper.Map<User>(userForAuthorization);
 
-            await _unit.UserRepository.Authorization(
-                login: userForAuthorization.Login,
-                password: userForAuthorization.Password
-            );
+            var identityResult = await _userManager.CreateAsync(mappedUser, userForAuthorization.Password);
 
-            if (!await _unit.Commit())
-                return BadRequest("Data wasn`t saved");
+            if (!identityResult.Succeeded)
+                return BadRequest(identityResult.Errors);
 
-            return StatusCode(201);
+            var createdUser = await _userManager.FindByNameAsync(mappedUser.UserName);
+
+            (string token, User user) = await Token.CreateToken(createdUser, _config, _userManager);
+
+            return CreatedAtAction(
+                actionName: nameof(Authentication),
+                value: new
+                {
+                    token,
+                    user = _mapper.Map<UserForViewDTO>(user)
+                }
+                );
         }
 
         [HttpPost("authentication", Name = nameof(Authentication))]
         public async Task<IActionResult> Authentication(UserForAuthenticationDTO userForAthentication)
         {
-            var authDate = await _unit.UserRepository.Authentication(
-                login: userForAthentication.Login,
-                password: userForAthentication.Password,
-                config: _config
-            );
+            var findedUser = await _userManager.FindByNameAsync(userForAthentication.UserName);
 
-            if (authDate is null)
-                return Unauthorized("Wrong login or password. Try again");
+            var identityResult = await _signInManager.CheckPasswordSignInAsync(findedUser, userForAthentication.Password, false);
 
-            (string token, User user) = authDate;
+            if (!identityResult.Succeeded)
+                return Unauthorized("Wrong login or password");
+
+             (string token, User user) = await Token.CreateToken(findedUser, _config, _userManager);
 
             return Ok(
                 new

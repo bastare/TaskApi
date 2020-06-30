@@ -13,7 +13,7 @@ using TaskApi.DTOs.ProjectDTOs.Pagination;
 namespace TaskApi.Data.Repository
 {
     public sealed class DataRepository<TContext> : Repository<User, TContext>
-        where TContext : DbContext
+        where TContext : DataContext
     {
         public DataRepository(TContext context) : base(context)
         { }
